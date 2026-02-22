@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadde Studios </title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <header class="site-header">
+        <div class="container">
+            <a href="#" class="logo" aria-label="Cadde Studios">
+                <img src="img/logo.png" alt="Cadde Studios logo">
+            </a>
+            <nav class="site-nav" id="site-nav">
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="Portfolio.html">Portfolio</a></li>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </nav>
+            <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">☰</button>
+        </div>
+        
+    </header>
+
+                <!-- Put these where you want the controls + gallery -->
+        <div class="group-buttons container" id="group-buttons"></div>
+        
+        <div class="photos-grid container" id="photos-grid">
+          <!-- set data-group for grouping -->
+          <img src="img/15.jpg" alt="01" data-group="landscape">
+          <img src="img/1.jpg"  alt="1"  data-group="portrait">
+          <img src="img/2.jpg"  alt="2"  data-group="landscape">
+          <img src="img/3.jpg"  alt="3"  data-group="portrait">
+          <img src="img/4.jpg"  alt="4"  data-group="portrait">
+            <img src="img/5.jpg"  alt="5"  data-group="portrait">
+        </div>
+              
+              
+              
+              <script>
+        (function(){
+          const grid = document.getElementById('photos-grid');
+          const btnBar = document.getElementById('group-buttons');
+          if(!grid || !btnBar) return;
+        
+          // collect images and groups
+          const imgs = Array.from(grid.querySelectorAll('img'));
+          const groups = new Map();
+          imgs.forEach(img=>{
+            const g = img.dataset.group || 'ungrouped';
+            if(!groups.has(g)) groups.set(g, []);
+            groups.get(g).push(img);
+          });
+        
+          // show/hide
+          function showGroup(name){
+            imgs.forEach(img=>{
+              img.style.display = (name === 'all' || (img.dataset.group||'ungrouped') === name) ? '' : 'none';
+            });
+            Array.from(btnBar.children).forEach(b=> b.classList.toggle('active', b.datasetGroup===name));
+          }
+        
+          // create All button
+          const allBtn = document.createElement('button');
+          allBtn.textContent = 'All';
+          allBtn.datasetGroup = 'all';
+          allBtn.classList.add('active');
+          allBtn.addEventListener('click', ()=> showGroup('all'));
+          btnBar.appendChild(allBtn);
+        
+          // create per-group buttons
+          for(const name of groups.keys()){
+            const b = document.createElement('button');
+            b.textContent = name;
+            b.datasetGroup = name;
+            b.addEventListener('click', ()=> showGroup(name));
+            btnBar.appendChild(b);
+          }
+        
+          // click image: prefer openLightbox(src, alt) if available, otherwise open in new tab
+          grid.addEventListener('click', (e)=>{
+            const img = e.target.closest('img');
+            if(!img) return;
+            if(typeof openLightbox === 'function') openLightbox(img.src, img.alt);
+            else window.open(img.src, '_blank');
+          });
+        
+          showGroup('all');
+        })();
+        </script>
+
+        
+</body>
+</html>
